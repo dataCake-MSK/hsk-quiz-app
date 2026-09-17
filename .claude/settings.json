@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-vcs-check.js\"",
+            "timeout": 30,
+            "statusMessage": "형상관리 상태 점검 중"
+          }
+        ]
+      }
+    ]
+  }
+}
