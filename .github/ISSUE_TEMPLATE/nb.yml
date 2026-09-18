@@ -1,0 +1,16 @@
+name: NB (니즈 덤프)
+description: 떠오른 니즈를 형식 없이 던져두기. 정제 후 PRD/SRS로 승격.
+title: "[NB] "
+labels: ["type:needs"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: 니즈
+      description: 무엇이 필요하거나 불편한지 자유롭게
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: 배경 / 참고

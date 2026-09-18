@@ -1,0 +1,38 @@
+name: 작업 (SRS)
+description: SRS 항목 1개에 대응하는 작업 (SRS 1개 = 이슈 1개 = PR 1개)
+title: "[SRS-000] "
+labels: ["type:feature"]
+body:
+  - type: input
+    id: trace
+    attributes:
+      label: 추적 ID
+      placeholder: "NB-002 → PRD-001 → SRS-010"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 작업 내용
+      description: 직접 시나리오 테스트할 수 있는 최소 단위로
+    validations:
+      required: true
+  - type: textarea
+    id: ac
+    attributes:
+      label: 수용 기준 (AC)
+      description: 확인 가능한 문장으로. 명확해야 loop-ready 라벨을 붙일 수 있음
+      value: |
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: verify
+    attributes:
+      label: 확인 방법
+      description: 실행 명령 / 눌러볼 화면 / 확인할 응답
+  - type: textarea
+    id: notes
+    attributes:
+      label: 메모 / 제약
+      description: 선행 이슈, 머지 등급 예상, 도입하는 패턴(ADR)
