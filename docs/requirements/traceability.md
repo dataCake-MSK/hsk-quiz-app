@@ -6,27 +6,27 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 
 | NB | PRD | SRS | 이슈 | PR | 상태 |
 |---|---|---|---|---|---|
-| - | 기반 | SRS-001 백엔드 스캐폴딩 | - | - | todo |
-| NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | - | - | todo |
-| - | 기반 | SRS-003 CI | - | - | todo |
-| NB-002 | PRD-001 | SRS-004 PostgreSQL·users | - | - | todo |
-| NB-002 | PRD-001 | SRS-010 회원가입 API | - | - | todo |
-| NB-002 | PRD-001 | SRS-011 로그인·내 정보 | - | - | todo |
-| NB-002 | PRD-001 | SRS-012 토큰 갱신 | - | - | todo |
-| NB-002 | PRD-001 | SRS-013 앱 가입·로그인 화면 | - | - | todo |
-| NB-013 | PRD-001 | SRS-014 rate limit·CORS | - | - | todo |
-| NB-003 | PRD-002 | SRS-020 단어 테이블·목록 API | - | - | todo |
-| NB-003, NB-004 | PRD-002, PRD-003 | SRS-021 앱 단어 목록·상세 | - | - | todo |
-| NB-003 | PRD-002 | SRS-022 커스텀 단어 | - | - | todo |
-| NB-004, NB-015 | PRD-003 | SRS-023 카테고리 | - | - | todo |
-| NB-005 | PRD-004 | SRS-024 즐겨찾기 | - | - | todo |
-| NB-012 | PRD-004 | SRS-025 Repository 도입 | - | - | todo |
-| NB-001 | PRD-005 | SRS-030 혼동 관계·세션 시작 | - | - | todo |
-| NB-001 | PRD-005 | SRS-031 다음 문제 | - | - | todo |
-| NB-001 | PRD-005 | SRS-032 답변·숙련도 | - | - | todo |
-| NB-001 | PRD-005 | SRS-033 세션 종료·결과 | - | - | todo |
-| NB-005, NB-012 | PRD-004, PRD-005 | SRS-034 즐겨찾기 퀴즈·Strategy | - | - | todo |
-| NB-012 | PRD-005 | SRS-035 뜻→단어·Factory | - | - | todo |
+| - | 기반 | SRS-001 백엔드 스캐폴딩 | #1 | - | todo |
+| NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | #2 | - | todo |
+| - | 기반 | SRS-003 CI | #3 | - | todo |
+| NB-002 | PRD-001 | SRS-004 PostgreSQL·users | #4 | - | todo |
+| NB-002 | PRD-001 | SRS-010 회원가입 API | #5 | - | todo |
+| NB-002 | PRD-001 | SRS-011 로그인·내 정보 | #6 | - | todo |
+| NB-002 | PRD-001 | SRS-012 토큰 갱신 | #7 | - | todo |
+| NB-002 | PRD-001 | SRS-013 앱 가입·로그인 화면 | #8 | - | todo |
+| NB-013 | PRD-001 | SRS-014 rate limit·CORS | #9 | - | todo |
+| NB-003 | PRD-002 | SRS-020 단어 테이블·목록 API | #10 | - | todo |
+| NB-003, NB-004 | PRD-002, PRD-003 | SRS-021 앱 단어 목록·상세 | #11 | - | todo |
+| NB-003 | PRD-002 | SRS-022 커스텀 단어 | #12 | - | todo |
+| NB-004, NB-015 | PRD-003 | SRS-023 카테고리 | #13 | - | todo |
+| NB-005 | PRD-004 | SRS-024 즐겨찾기 | #14 | - | todo |
+| NB-012 | PRD-004 | SRS-025 Repository 도입 | #15 | - | todo |
+| NB-001 | PRD-005 | SRS-030 혼동 관계·세션 시작 | #16 | - | todo |
+| NB-001 | PRD-005 | SRS-031 다음 문제 | #17 | - | todo |
+| NB-001 | PRD-005 | SRS-032 답변·숙련도 | #18 | - | todo |
+| NB-001 | PRD-005 | SRS-033 세션 종료·결과 | #19 | - | todo |
+| NB-005, NB-012 | PRD-004, PRD-005 | SRS-034 즐겨찾기 퀴즈·Strategy | #20 | - | todo |
+| NB-012 | PRD-005 | SRS-035 뜻→단어·Factory | #21 | - | todo |
 | NB-006 | PRD-006 | SRS-040 수동 혼동 태깅 | - | - | planned |
 | NB-007 | PRD-007 | SRS-041 오답노트 | - | - | planned |
 | NB-008 | PRD-008 | SRS-042 학습 통계 | - | - | planned |
