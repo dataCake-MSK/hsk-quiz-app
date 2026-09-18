@@ -98,6 +98,14 @@ AC가 명확하고 사람이 실기기로 확인할 필요가 적은 것만 제�
 3. **NB-017 폰 접속 방식** — SRS-002에서 LAN 먼저 시험, 외부에서도 필요하면 터널(🔴)
 4. **ADR 0001~0004 승인** — docs PR 머지로 승인 처리
 
+## 갱신 (2026-09-18)
+- 사용자 승인으로 **공개 저장소 생성 완료**: `dataCake-MSK/hsk-quiz-app`
+- secret scanning·push protection **활성화됨**(Public 저장소라 무료). 저장소 설정은 merge commit만 허용 + 머지 후 브랜치 자동 삭제
+- 라벨 14개, 마일스톤 2개(M0 기반 #1, M1 MVP #2), **이슈 #1~#21 등록 완료**(SRS-001~035), SRS·추적표에 번호 반영
+- PR 2건 생성: [#22 문서](https://github.com/dataCake-MSK/hsk-quiz-app/pull/22) 🟡, [#23 규칙·자동화](https://github.com/dataCake-MSK/hsk-quiz-app/pull/23) 🔴 — 둘 다 사용자 머지 대기
+- 6절 결정 필요 1번(공개 저장소 생성)은 **완료**. 2·3·4번은 그대로 남음
+- CLAUDE.md에 규칙 2개 추가(사용자 요청): 작업 후 변경 파일 요약 보고, 개발 서버를 오래 켜두면 계속 켤지 질문
+
 ## 참고
 - FastAPI 보안 튜토리얼(PyJWT, pwdlib Argon2): https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
 - GitHub secret scanning: https://docs.github.com/en/code-security/secret-scanning/introduction/about-secret-scanning

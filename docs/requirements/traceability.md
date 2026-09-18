@@ -33,6 +33,12 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 | NB-009 | PRD-009 | SRS-050 타임어택 | - | - | planned |
 | NB-010 | PRD-010 | SRS-051 던전 모드 | - | - | planned |
 
+## 부트스트랩 PR (SRS 항목이 아닌 준비 작업)
+| 내용 | PR | 등급 | 상태 |
+|---|---|---|---|
+| 요구사항·아키텍처·UX 문서 | [#22](https://github.com/dataCake-MSK/hsk-quiz-app/pull/22) | 🟡 | 사용자 머지 대기 |
+| 작업 규칙·스킬·Stop 훅·템플릿 | [#23](https://github.com/dataCake-MSK/hsk-quiz-app/pull/23) | 🔴 | 사용자 머지 대기 |
+
 ## 보류·미승격 NB
 | NB | 상태 | 다음 행동 |
 |---|---|---|
