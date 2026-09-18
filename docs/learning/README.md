@@ -6,4 +6,5 @@
 
 | 주제 | 노트 | 학습 목표 |
 |---|---|---|
-| (아직 없음) | | |
+| Git 브랜치와 PR 여러 개 동시에 진행하기 | [git-branches-and-parallel-prs.md](git-branches-and-parallel-prs.md) | (작업 방식) |
+| 남의 리소스 접근은 403이 아니라 404 | [authorization-404-vs-403.md](authorization-404-vs-403.md) | ③ 보안 |
