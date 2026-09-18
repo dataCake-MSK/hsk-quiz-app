@@ -6,7 +6,7 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 
 | NB | PRD | SRS | 이슈 | PR | 상태 |
 |---|---|---|---|---|---|
-| - | 기반 | SRS-001 백엔드 스캐폴딩 | #1 | - | todo |
+| - | 기반 | SRS-001 백엔드 스캐폴딩 | #1 | #24 | in-progress |
 | NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | #2 | - | todo |
 | - | 기반 | SRS-003 CI | #3 | - | todo |
 | NB-002 | PRD-001 | SRS-004 PostgreSQL·users | #4 | - | todo |
@@ -36,8 +36,8 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 ## 부트스트랩 PR (SRS 항목이 아닌 준비 작업)
 | 내용 | PR | 등급 | 상태 |
 |---|---|---|---|
-| 요구사항·아키텍처·UX 문서 | [#22](https://github.com/dataCake-MSK/hsk-quiz-app/pull/22) | 🟡 | 사용자 머지 대기 |
-| 작업 규칙·스킬·Stop 훅·템플릿 | [#23](https://github.com/dataCake-MSK/hsk-quiz-app/pull/23) | 🔴 | 사용자 머지 대기 |
+| 요구사항·아키텍처·UX 문서 | [#22](https://github.com/dataCake-MSK/hsk-quiz-app/pull/22) | 🟡 | done (2026-09-18 머지) |
+| 작업 규칙·스킬·Stop 훅·템플릿 | [#23](https://github.com/dataCake-MSK/hsk-quiz-app/pull/23) | 🔴 | done (2026-09-18 머지) |
 
 ## 보류·미승격 NB
 | NB | 상태 | 다음 행동 |
