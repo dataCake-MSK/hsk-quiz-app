@@ -1,0 +1,27 @@
+[project]
+name = "hsk-quiz-backend"
+version = "0.1.0"
+description = "HSK Quiz App API (FastAPI)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.141.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# E/F: 기본 오류, I: import 정렬, B: 흔한 버그 패턴, UP: 최신 문법
+select = ["E", "F", "I", "B", "UP"]

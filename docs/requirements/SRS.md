@@ -12,7 +12,7 @@
 ## 목록
 | ID | M | 제목 | PRD | area | 상태 | 이슈 |
 |---|---|---|---|---|---|---|
-| SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | todo | #1 |
+| SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | in-progress | #1 |
 | SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | todo | #2 |
 | SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | todo | #3 |
 | SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | todo | #4 |
@@ -47,14 +47,14 @@
 - 추적: 기반 · 이슈: #1
 - 작업
   - `backend/`에 uv 프로젝트 생성, FastAPI 설치
-  - 4계층 폴더: `app/domain`, `app/application`, `app/interface`, `app/infrastructure` (빈 패키지 + 각 폴더 README 한 줄로 책임 설명) — [ADR-0003](../architecture/adr/0003-clean-architecture-layers.md)
+  - 4계층 폴더: `app/domain`, `app/application`, `app/interface`, `app/infrastructure` (빈 패키지 + 각 `__init__.py` docstring으로 책임 설명) — [ADR-0003](../architecture/adr/0003-clean-architecture-layers.md)
   - `GET /health` → `{"status": "ok"}`
   - pytest, ruff 설정
 - AC
-  - [ ] `cd backend && uv run fastapi dev app/main.py` 실행 후 `curl http://127.0.0.1:8000/health`가 `{"status":"ok"}`
-  - [ ] `uv run pytest`에서 health 테스트 1개 통과
-  - [ ] `uv run ruff check .` 오류 0
-  - [ ] `http://127.0.0.1:8000/docs`에 `/health`가 보임
+  - [x] `cd backend && uv run fastapi dev app/main.py` 실행 후 `curl http://127.0.0.1:8000/health`가 `{"status":"ok"}`
+  - [x] `uv run pytest`에서 health 테스트 1개 통과
+  - [x] `uv run ruff check .` 오류 0
+  - [x] `http://127.0.0.1:8000/docs`에 `/health`가 보임
 
 ### SRS-002 Expo 앱 스캐폴딩과 백엔드 연결 확인
 - 추적: 기반, NB-017 · 이슈: #2
