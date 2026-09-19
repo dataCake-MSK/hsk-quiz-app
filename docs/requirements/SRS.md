@@ -12,7 +12,7 @@
 ## 목록
 | ID | M | 제목 | PRD | area | 상태 | 이슈 |
 |---|---|---|---|---|---|---|
-| SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | in-progress | #1 |
+| SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | done | #1 |
 | SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | todo | #2 |
 | SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | todo | #3 |
 | SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | todo | #4 |
