@@ -7,7 +7,7 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 | NB | PRD | SRS | 이슈 | PR | 상태 |
 |---|---|---|---|---|---|
 | - | 기반 | SRS-001 백엔드 스캐폴딩 | #1 | #24 | done |
-| NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | #2 | - | todo |
+| NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | #2 | #27 | in-progress |
 | - | 기반 | SRS-003 CI | #3 | - | todo |
 | NB-002 | PRD-001 | SRS-004 PostgreSQL·users | #4 | - | todo |
 | NB-002 | PRD-001 | SRS-010 회원가입 API | #5 | - | todo |
