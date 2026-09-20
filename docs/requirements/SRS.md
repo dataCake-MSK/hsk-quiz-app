@@ -14,7 +14,7 @@
 |---|---|---|---|---|---|---|
 | SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | done | #1 |
 | SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | in-progress | #2 |
-| SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | todo | #3 |
+| SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | in-progress | #3 |
 | SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | todo | #4 |
 | SRS-010 | M1 | 회원가입 API | PRD-001 | auth | todo | #5 |
 | SRS-011 | M1 | 로그인 API와 내 정보 조회 | PRD-001 | auth | todo | #6 |
@@ -70,11 +70,11 @@
 
 ### SRS-003 CI
 - 추적: 기반 · 이슈: #3
-- 작업: `.github/workflows/ci.yml` — PR·main push 때 backend(`uv sync`, `ruff check`, `pytest`), mobile(`npm ci`, `tsc --noEmit`, `expo lint`) 실행. 바뀐 경로만 실행하도록 path 필터 사용
+- 작업: 워크플로를 둘로 나눈다 — `.github/workflows/ci-backend.yml`(`uv sync --locked`, `ruff check`, `ruff format --check`, `pytest`), `ci-mobile.yml`(`npm ci`, `tsc --noEmit`, `expo lint`). GitHub 기본 `paths` 필터로 바뀐 쪽만 실행하고, `permissions: contents: read` + `pull_request` 트리거만 사용
 - AC
-  - [ ] 이 PR에서 두 job이 모두 초록
-  - [ ] 일부러 실패하는 테스트를 넣은 임시 커밋에서 CI가 빨강이 되는 것을 확인한 뒤 되돌림
-  - [ ] `CLAUDE.md` 개발 명령에 CI와 같은 로컬 검증 명령 기재
+  - [x] 이 PR에서 두 job이 모두 초록 — CI backend 11초, CI mobile 19초
+  - [x] 일부러 실패하는 테스트를 넣은 임시 커밋에서 CI가 빨강이 되는 것을 확인한 뒤 되돌림 — `test_ci_red_check.py` 추가 → backend 빨강 → revert 후 다시 초록
+  - [x] `CLAUDE.md` 개발 명령에 CI와 같은 로컬 검증 명령 기재
 
 ### SRS-004 PostgreSQL 연결, 마이그레이션 도구, users 테이블
 - 추적: 기반, PRD-001 · 이슈: #4
