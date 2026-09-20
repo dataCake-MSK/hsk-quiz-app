@@ -16,7 +16,11 @@ async function fetchHealth(): Promise<Status> {
   try {
     const response = await fetch(`${API_URL}/health`);
     if (!response.ok) {
-      return { kind: "error", message: `서버 응답 오류 (${response.status})` };
+      // 502·503·504는 서버(또는 터널 뒤의 서버)가 떠 있지 않다는 뜻이라 같은 문구로 묶는다.
+      // 괄호 안 상태 코드는 개발 중 원인을 구분하기 위한 표시.
+      const unreachable = response.status === 502 || response.status === 503 || response.status === 504;
+      const message = unreachable ? "서버에 연결할 수 없음" : "서버 응답 오류";
+      return { kind: "error", message: `${message} (${response.status})` };
     }
     const body = (await response.json()) as { status?: string };
     return { kind: "ok", status: body.status ?? "unknown" };
