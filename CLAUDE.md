@@ -72,7 +72,21 @@ Stop 훅(`.claude/hooks/stop-vcs-check.js`)이 턴 종료 시 커밋 안 된 변
 - 스킬: 커밋·PR·머지 `commit`, 이슈·NB `issue`, 리포트 `report`, 일지 `journal`, 학습 노트 `learn`.
 
 ## 보안 (Public 저장소)
+> 기준과 배경은 [보안 리포트](docs/reports/2026-09-20-security-baseline.md). **모든 이슈에서 아래 점검을 거친다.**
+
+### 이슈를 끝낼 때 보안 점검 (해당하는 항목만, PR 본문에 결과 기재)
+1. 비밀 값이 코드·문서·로그·테스트에 들어가지 않았는가 (Stop 훅이 작업 트리를 자동 스캔한다)
+2. 유저 소유 리소스에 `user_id` 필터가 걸렸는가, 남의 것은 404인가 — 해당 테스트를 추가했는가
+3. 입력을 Pydantic으로 검증했는가, 오류 메시지가 내부 정보·존재 여부를 흘리지 않는가
+4. 새 의존성을 추가했다면 이유가 PR에 있는가 (🟡 이상)
+5. 새 엔드포인트라면 인증 필요 여부와 rate limit 대상인지 판단했는가
+6. 앱이면 토큰을 `expo-secure-store`에 넣었는가, `EXPO_PUBLIC_*`에 비밀 값이 없는가
+
+### 항상
 - 비밀 값(키·토큰·비밀번호·DB 접속 문자열·터널 URL·개인 이메일)은 코드·문서·일지·커밋 메시지에 넣지 않는다. 커밋 전 패턴 점검(`commit` 스킬). 의심되면 중단하고 알린다.
+- 유출이 의심되면 **키 폐기·재발급이 먼저**, 그다음 기록 정리(사용자 승인 후).
+- CI는 `pull_request` 트리거만 쓰고 `pull_request_target`·포크 PR에 시크릿 노출을 만들지 않는다.
+- Dependabot 알림이 오면 이슈로 만들어 처리한다.
 - `.env*`는 커밋 금지, `.env.example`에는 변수 이름만.
 - GitHub secret scanning·push protection 사용. push가 차단되면 우회하지 말고 사용자에게 알린다.
 - 인가 규칙([ADR-0004](docs/architecture/adr/0004-auth-and-identifiers.md))

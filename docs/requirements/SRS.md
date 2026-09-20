@@ -20,7 +20,7 @@
 | SRS-011 | M1 | 로그인 API와 내 정보 조회 | PRD-001 | auth | todo | #6 |
 | SRS-012 | M1 | 토큰 갱신 API | PRD-001 | auth | todo | #7 |
 | SRS-013 | M1 | 앱 가입·로그인 화면과 토큰 보관 | PRD-001 | mobile | todo | #8 |
-| SRS-014 | M1 | 인증 엔드포인트 rate limit과 CORS | PRD-001 | auth | todo | #9 |
+| SRS-014 | M1 | 인증 엔드포인트 rate limit과 CORS | PRD-001 | auth | in-progress | #9 |
 | SRS-020 | M1 | 단어 테이블, 샘플 시드, 단어 목록 API | PRD-002 | words | todo | #10 |
 | SRS-021 | M1 | 앱 단어 목록·상세 화면 | PRD-002, PRD-003 | mobile | todo | #11 |
 | SRS-022 | M1 | 커스텀 단어 추가 | PRD-002 | words | todo | #12 |
@@ -93,7 +93,7 @@
 
 ### SRS-010 회원가입 API
 - 추적: NB-002 → PRD-001 · 이슈: #5
-- 작업: `POST /auth/register` {email, password, nickname}. 비밀번호는 argon2 해싱 — [ADR-0004](../architecture/adr/0004-auth-and-identifiers.md)
+- 작업: `POST /auth/register` {email, password, nickname}. 비밀번호는 argon2 해싱 — [ADR-0004](../architecture/adr/0004-auth-and-identifiers.md). **SRS-014에서 준비한 `AUTH_RATE_LIMIT`을 이 라우터에 적용**하고 6번째 요청 → 429 테스트 추가
 - AC
   - [ ] 정상 요청 → 201, 응답에 `user_id`, `email`, `nickname`만 있음(`password_hash` 없음)
   - [ ] 같은 이메일(대소문자만 다른 경우 포함) → 409
@@ -103,7 +103,7 @@
 
 ### SRS-011 로그인 API와 내 정보 조회
 - 추적: NB-002 → PRD-001 · 이슈: #6
-- 작업: `POST /auth/login` → `access_token`(15분), `refresh_token`(14일). `GET /users/me`. 공통 `get_current_user` 의존성
+- 작업: `POST /auth/login` → `access_token`(15분), `refresh_token`(14일). `GET /users/me`. 공통 `get_current_user` 의존성. **`AUTH_RATE_LIMIT` 적용**(6번째 로그인 → 429 테스트)
 - AC
   - [ ] 올바른 계정 → 200 + 두 토큰
   - [ ] 틀린 비밀번호와 없는 이메일이 **같은** 401 메시지
@@ -130,11 +130,16 @@
 
 ### SRS-014 인증 엔드포인트 rate limit과 CORS
 - 추적: NB-013 → PRD-001 · 이슈: #9
-- 작업: `/auth/login`, `/auth/register`에 IP 기준 제한(예: 분당 5회), CORS 허용 출처를 `CORS_ORIGINS` 환경 변수로
+- 작업
+  - slowapi로 IP 기준 요청 제한. 설정값은 환경 변수 `PUBLIC_RATE_LIMIT`(기본 30/minute), `AUTH_RATE_LIMIT`(기본 5/minute)
+  - CORS 허용 출처를 `CORS_ORIGINS` 환경 변수로(와일드카드 금지, `allow_credentials=False`)
+  - **순서 변경**: 이 이슈를 인증(SRS-010·011)보다 먼저 진행했으므로, 지금은 공개 엔드포인트 `/health`에 `PUBLIC_RATE_LIMIT`을 적용해 동작을 확인한다. `AUTH_RATE_LIMIT`은 값만 준비해 두고 **SRS-010·011에서 `/auth/*`에 적용**한다(각 이슈의 작업 항목에 포함)
 - AC
-  - [ ] 1분 안에 로그인 6번째 요청 → 429
-  - [ ] 허용하지 않은 Origin의 preflight에 `Access-Control-Allow-Origin` 없음
-  - [ ] pytest로 두 경우 검증
+  - [x] 제한이 3/minute일 때 1분 안에 4번째 `/health` 요청 → 429, 본문은 `{"detail": ...}`
+  - [x] 허용하지 않은 Origin의 preflight에 `Access-Control-Allow-Origin` 없음
+  - [x] 허용한 Origin의 preflight에는 해당 헤더 있음
+  - [x] `CORS_ORIGINS`가 비어 있으면 CORS 헤더를 붙이지 않음
+  - [x] 위 경우를 pytest로 검증(`tests/test_rate_limit.py`, `tests/test_cors.py`)
 
 ## M1 MVP — 단어 (PRD-002, 003, 004)
 

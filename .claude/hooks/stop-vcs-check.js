@@ -44,6 +44,45 @@ if (branch && branch !== 'HEAD') {
   }
 }
 
+// 비밀 값 스캔: 커밋되기 전에 작업 트리에서 걸러낸다 (공개 저장소).
+const SECRET_PATTERNS = [
+  [/\bgh[pousr]_[A-Za-z0-9]{20,}/, 'GitHub 토큰'],
+  [/\bgithub_pat_[A-Za-z0-9_]{20,}/, 'GitHub PAT'],
+  [/\bsk-[A-Za-z0-9]{20,}/, 'API 키(sk-)'],
+  [/\bAKIA[0-9A-Z]{16}\b/, 'AWS 액세스 키'],
+  [/-----BEGIN [A-Z ]*PRIVATE KEY-----/, '개인 키'],
+  [/\bpostgres(?:ql)?(?:\+\w+)?:\/\/[^\s:/@]+:[^\s@]+@/, 'DB 접속 문자열(비밀번호 포함)'],
+  [/\b(?:JWT_SECRET|SECRET_KEY|API_KEY|PASSWORD)\s*[:=]\s*["']?[^\s"'<>$#]{8,}/i, '설정 파일의 비밀 값'],
+  [/https:\/\/[a-z0-9-]+\.trycloudflare\.com/, '터널 주소(개인 URL)'],
+  [/\b[a-z0-9-]+\.exp\.direct\b/, 'Expo 터널 주소(개인 URL)'],
+];
+
+const scanTargets = () => {
+  const out = [];
+  const diff = [git('diff -U0'), git('diff --cached -U0')].filter(Boolean).join('\n');
+  if (diff) out.push(['변경분(diff)', diff]);
+  const untracked = (git('ls-files --others --exclude-standard') || '').split('\n').filter(Boolean);
+  for (const file of untracked.slice(0, 200)) {
+    try {
+      if (fs.statSync(file).size > 512 * 1024) continue;
+      out.push([file, fs.readFileSync(file, 'utf8')]);
+    } catch {}
+  }
+  return out;
+};
+
+const secretHits = [];
+for (const [where, text] of scanTargets()) {
+  for (const [pattern, label] of SECRET_PATTERNS) {
+    if (pattern.test(text)) secretHits.push(`${label} 의심 — ${where}`);
+  }
+}
+if (secretHits.length) {
+  problems.push(
+    `비밀 값·개인 URL 의심 (커밋 금지, 확인 필요):\n${[...new Set(secretHits)].map((h) => `  ${h}`).join('\n')}`,
+  );
+}
+
 const now = new Date();
 const pad = (n) => String(n).padStart(2, '0');
 const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
@@ -66,6 +105,7 @@ const reason = [
   ...problems.map((p) => `- ${p}`),
   '',
   '처리 방법 (CLAUDE.md "자동 형상관리" 규칙):',
+  '0. 비밀 값·개인 URL 의심이면 커밋하지 말고 값을 .env로 옮기거나 문서에서 지운 뒤 사용자에게 알린다.',
   '1. 일지 누락이면 journal 스킬로 오늘 일지를 갱신한다.',
   '2. 이번 작업에서 사용자가 새로 알게 된 개념·시행착오가 있으면 learn 스킬로 기록한다.',
   '3. commit 스킬로 브랜치 → 커밋 → push → PR, 머지 등급에 따라 자체 머지 또는 사용자 머지 대기.',

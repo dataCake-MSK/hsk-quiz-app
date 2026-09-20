@@ -9,3 +9,5 @@
 | Git 브랜치와 PR 여러 개 동시에 진행하기 | [git-branches-and-parallel-prs.md](git-branches-and-parallel-prs.md) | (작업 방식) |
 | 남의 리소스 접근은 403이 아니라 404 | [authorization-404-vs-403.md](authorization-404-vs-403.md) | ③ 보안 |
 | 프론트엔드·백엔드 모노레포 vs 분리 | [monorepo-frontend-backend.md](monorepo-frontend-backend.md) | ② 아키텍처 |
+| ngrok과 터널이 하는 일 | [ngrok-and-tunnels.md](ngrok-and-tunnels.md) | (개발 환경) |
+| rate limit과 CORS | [rate-limit-and-cors.md](rate-limit-and-cors.md) | ③ 보안 |
