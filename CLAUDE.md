@@ -110,7 +110,16 @@ Stop 훅(`.claude/hooks/stop-vcs-check.js`)이 턴 종료 시 커밋 안 된 변
 | 마이그레이션 | `cd backend && uv run alembic upgrade head` (SRS-004 이후) |
 | 앱 실행(폰 확인) | `cd mobile && npx expo start --tunnel --go` (8081이 사용 중이면 `--port 8082`) |
 | 앱 타입 검사 | `cd mobile && npx tsc --noEmit` |
+| 앱 lint | `cd mobile && npx expo lint` |
 | 백엔드 터널 | `cloudflared tunnel --url http://localhost:8000 --no-autoupdate` |
+
+**CI와 같은 검증**(PR 전에 로컬에서 그대로 실행)
+```bash
+cd backend && uv sync --locked && uv run ruff check . && uv run ruff format --check . && uv run pytest -q
+cd mobile  && npm ci && npx tsc --noEmit && npx expo lint
+```
+- 워크플로: `.github/workflows/ci-backend.yml`(backend/** 변경 시), `ci-mobile.yml`(mobile/** 변경 시). 바뀐 쪽만 돈다.
+- CI가 있으므로 🟢 자체 머지 전에는 `gh pr checks <번호> --watch`로 통과를 확인한다.
 
 - Expo는 SDK마다 API가 바뀌므로 코드 작성 전 해당 버전 문서를 확인한다. 현재 SDK 57.
 - **폰 확인은 터널 2개**(Expo Metro + 백엔드 API)가 필요하다. 절차와 주의점은 [리포트](docs/reports/2026-09-20-phone-backend-access.md).

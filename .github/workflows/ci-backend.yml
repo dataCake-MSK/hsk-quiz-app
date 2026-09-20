@@ -1,0 +1,50 @@
+name: CI backend
+
+# 포크 PR도 검사하되 pull_request 트리거만 쓴다.
+# (pull_request_target은 포크 코드에 시크릿을 노출할 수 있어 쓰지 않는다 — 보안 리포트 2절 P4)
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/ci-backend.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/ci-backend.yml'
+
+# 이 워크플로는 저장소에 아무것도 쓰지 않는다.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-backend-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  check:
+    name: ruff · pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: 의존성 설치 (lock 그대로)
+        run: uv sync --locked
+
+      - name: lint
+        run: uv run ruff check .
+
+      - name: 포맷 확인
+        run: uv run ruff format --check .
+
+      - name: 테스트
+        run: uv run pytest -q
