@@ -8,7 +8,7 @@
 ## 1. 요약
 - 지금까지 조치: secret scanning·push protection, `.env` 커밋 금지, ORM 사용, 남의 리소스 404, rate limit·CORS(이슈 #9), 커밋 전 비밀 값 패턴 점검.
 - 이번에 추가: **Dependabot 알림·보안 업데이트 활성화**, **Stop 훅의 비밀 값 스캔**, **CLAUDE.md 보안 점검 항목**(모든 이슈에 적용), PR 템플릿 보안 체크.
-- 사용자가 결정할 것: ① 커밋 이메일을 GitHub noreply로 바꿀지 ② main 브랜치 보호 규칙을 켤지 ③ CI에 gitleaks·CodeQL을 넣을지 → **셋 다 2026-09-20 기준 보류**(아래 갱신 참고).
+- 3절의 결정 ①②③은 **2026-09-20에 모두 적용**했다(아래 갱신 참고).
 - 사고 시나리오와 각 사고에서 실제로 벌어질 수 있는 일은 **7절**, 새 패키지를 받아들일지 판단하는 기준은 **8절**, CI 보안 도구 3종 설명은 **9절**.
 
 ## 2. 공개 저장소이기 때문에 생기는 것
@@ -32,7 +32,7 @@ GitHub → Settings → Emails에서 "Keep my email addresses private"와 "Block
 
 **② main 브랜치 보호** — 공개 저장소는 무료로 ruleset을 쓸 수 있다. "PR 없이는 main에 push 금지"만 켜면 지금 작업 방식과 충돌하지 않는다. 리뷰 승인 필수까지 켜면 1인 개발에서는 🟢 자체 머지가 막힌다.
 
-**③ CI 보안 단계(이슈 #3에 포함)** — gitleaks(비밀 값 스캔), `npm audit`·`uv pip audit`(의존성), CodeQL(공개 저장소 무료 정적 분석). 실행 시간이 늘어난다.
+**③ CI 보안 단계** — gitleaks(비밀 값 스캔), `npm audit`·`pip-audit`(의존성), CodeQL(정적 분석). 실행 시간이 늘어난다. → **2026-09-20 적용 완료**(아래 갱신).
 
 ## 4. 프로젝트 전반 보안 기준 (모든 이슈에 적용)
 
@@ -200,13 +200,22 @@ GitHub → Settings → Emails에서 "Keep my email addresses private"와 "Block
 |---|---|---|---|---|
 | **gitleaks** | 커밋·기록·파일에서 **비밀 값 패턴**(API 키, 토큰, 개인 키)을 찾는 오픈소스 스캐너. GitHub Action으로 PR마다 실행 | 패턴에 없는 형태의 비밀 값, 이미 유출된 키의 폐기 | 무료(MIT). Action은 **개인 계정 무료**, 조직은 무료 라이선스 키 필요 | S1 대비. 이슈 #4 전 |
 | **의존성 감사** | 설치된 패키지 목록을 취약점 DB와 대조. JS는 `npm audit`, Python은 `pip-audit`(PyPA, Python Packaging Advisory DB·OSV 사용). GitHub의 Dependabot은 저장소에서 같은 일을 상시 수행 | 아직 공개되지 않은 취약점, 악성 패키지 자체(=공급망) | 무료 | S6 대비. Dependabot은 **이미 켬**, CI 추가는 선택 |
-| **CodeQL** | GitHub의 **코드 정적 분석**. 코드를 DB로 만들어 질의해 SQL 인젝션·인가 누락·위험한 흐름 같은 패턴을 찾는다. Python·JS/TS 지원 | 비즈니스 로직 오류, 설정 실수, 런타임 문제 | 공개 저장소는 기본 설정 사용 가능(Actions 필요) | S3·S4 대비. 인증·DB 코드가 생긴 뒤가 효과적 |
+| **CodeQL** | GitHub의 **코드 정적 분석**. 코드를 DB로 만들어 질의해 SQL 인젝션·인가 누락·위험한 흐름 같은 패턴을 찾는다. Python·JS/TS 지원 | 비즈니스 로직 오류, 설정 실수, 런타임 문제 | 공개 저장소는 기본 설정 사용 가능(Actions 필요) | S3·S4 대비. **적용됨**(python, javascript-typescript, actions) |
 
 - 셋은 겹치지 않는다: **gitleaks = 비밀 값**, **의존성 감사 = 남의 코드의 알려진 취약점**, **CodeQL = 내 코드의 취약한 패턴**.
 - 도입한다면 순서는 gitleaks → 의존성 감사 → CodeQL. 앞의 둘은 빠르고, CodeQL은 실행 시간이 길다.
 
-## 갱신 (2026-09-20)
-- 3절 결정 ①(noreply 이메일) ②(브랜치 보호) ③(CI 보안 도구)은 **일단 보류**하기로 했다. S1·S7·S8의 "미적용" 항목이 여기에 해당한다.
+## 갱신 (2026-09-20) — 결정 3건 모두 적용
+
+| 결정 | 적용 내용 | 확인 |
+|---|---|---|
+| ① 커밋 이메일 | **이 저장소에만** `git config user.email`을 GitHub noreply로 설정(전역 설정은 사용자 것을 건드리지 않음) | 이후 커밋 작성자가 `…@users.noreply.github.com` |
+| ② main 브랜치 보호 | 규칙셋 "main 보호" 생성 — PR 필수(승인 0명), 강제 push 금지, 브랜치 삭제 금지, merge commit만 허용 | main 직접 push 시 `GH013: Changes must be made through a pull request` 로 거부됨 |
+| ③ CI 보안 도구 | `.github/workflows/security.yml`(gitleaks + pip-audit + npm audit) 추가, **CodeQL 기본 설정** 활성화(python, javascript-typescript, actions) | PR #33에서 gitleaks·의존성 감사·CodeQL 3개 언어 모두 통과 |
+
+- S7(개인 정보)·S8(main 오염)의 "미적용"은 해소됐다. 과거 커밋에 남은 개인 이메일은 기록 재작성이 필요해 그대로 둔다.
+- 사용자가 직접 할 수 있는 추가 조치(선택): GitHub → Settings → Emails에서 "Keep my email addresses private"와 "Block command line pushes that expose my email" 활성화. 전역 설정까지 바꾸려면 `git config --global user.email "59680837+dataCake-MSK@users.noreply.github.com"`.
+- npm audit 기준은 **high 이상**에서만 실패하게 했다. 현재 moderate 11건은 모두 Expo 간접 의존성이라 여기서 막으면 개발이 멈춘다 → Dependabot 알림으로 추적한다.
 - Dependabot 첫 경고 발생: `mobile/package-lock.json`의 `uuid`(moderate, `< 11.1.1`, Expo의 간접 의존성). 직접 사용하지 않아 영향은 낮고, 의존성 변경이므로 별도 PR(🟡)로 처리한다.
 - 7·8·9절을 추가했다(사고 시나리오별 문제 상황, 신규 의존성 판단 기준, CI 도구 설명).
 

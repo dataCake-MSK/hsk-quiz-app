@@ -90,6 +90,9 @@ Stop 훅(`.claude/hooks/stop-vcs-check.js`)이 턴 종료 시 커밋 안 된 변
 - **새 의존성은 [보안 리포트 8절 판단 기준](docs/reports/2026-09-20-security-baseline.md#8-신규-의존성-판단-기준)을 적용**한다. 표준 라이브러리·기존 패키지로 되면 추가하지 않고, 공식 문서가 권하는 것을 우선한다. 관리 중단·사용 규모·배포자·설치 스크립트·라이선스를 확인해 **확인 결과를 PR 본문에 2~3줄로 적는다**. 걸리는 항목이 있으면 설치하지 말고 대안과 함께 사용자에게 알린다.
 - `.env*`는 커밋 금지, `.env.example`에는 변수 이름만.
 - GitHub secret scanning·push protection 사용. push가 차단되면 우회하지 말고 사용자에게 알린다.
+- **main은 브랜치 보호 규칙으로 잠겨 있다**(PR 필수, 강제 push·삭제 금지). 직접 push는 `GH013`으로 거부되니 항상 브랜치 → PR로 간다.
+- 커밋 작성자 이메일은 이 저장소에서 GitHub noreply로 설정되어 있다(`git config user.email`). 바꾸지 않는다.
+- CI 보안 검사: `security.yml`(gitleaks 비밀 값 스캔, backend `pip-audit`, mobile `npm audit --audit-level=high`)와 CodeQL 기본 설정이 PR마다 돈다. 실패하면 우회하지 말고 원인을 고친다.
 - 인가 규칙([ADR-0004](docs/architecture/adr/0004-auth-and-identifiers.md))
   - 유저 소유 리소스(word_stats, word_bookmarks, quiz_sessions, 커스텀 단어 등)는 항상 `user_id = :current_user` 조건을 거친다. Repository 도입(SRS-025) 후에는 Repository 메서드의 필수 인자로 강제하고 우회 경로를 만들지 않는다.
   - 남의 리소스 접근은 404, 역할 부족은 403. 유저 소유 API마다 "다른 유저 토큰 → 404" 테스트를 둔다.
