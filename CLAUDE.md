@@ -87,6 +87,7 @@ Stop 훅(`.claude/hooks/stop-vcs-check.js`)이 턴 종료 시 커밋 안 된 변
 - 유출이 의심되면 **키 폐기·재발급이 먼저**, 그다음 기록 정리(사용자 승인 후).
 - CI는 `pull_request` 트리거만 쓰고 `pull_request_target`·포크 PR에 시크릿 노출을 만들지 않는다.
 - Dependabot 알림이 오면 이슈로 만들어 처리한다.
+- **새 의존성은 [보안 리포트 8절 판단 기준](docs/reports/2026-09-20-security-baseline.md#8-신규-의존성-판단-기준)을 적용**한다. 표준 라이브러리·기존 패키지로 되면 추가하지 않고, 공식 문서가 권하는 것을 우선한다. 관리 중단·사용 규모·배포자·설치 스크립트·라이선스를 확인해 **확인 결과를 PR 본문에 2~3줄로 적는다**. 걸리는 항목이 있으면 설치하지 말고 대안과 함께 사용자에게 알린다.
 - `.env*`는 커밋 금지, `.env.example`에는 변수 이름만.
 - GitHub secret scanning·push protection 사용. push가 차단되면 우회하지 말고 사용자에게 알린다.
 - 인가 규칙([ADR-0004](docs/architecture/adr/0004-auth-and-identifiers.md))
