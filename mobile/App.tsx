@@ -32,12 +32,22 @@ async function fetchHealth(): Promise<Status> {
 export default function App() {
   const [status, setStatus] = useState<Status>({ kind: "loading" });
 
+  // 버튼용: 다시 로딩 상태로 되돌린 뒤 조회한다.
   const check = useCallback(() => {
     setStatus({ kind: "loading" });
     void fetchHealth().then(setStatus);
   }, []);
 
-  useEffect(check, [check]);
+  // 첫 렌더에서 한 번 조회. 화면을 벗어난 뒤 응답이 와도 상태를 바꾸지 않는다.
+  useEffect(() => {
+    let cancelled = false;
+    void fetchHealth().then((result) => {
+      if (!cancelled) setStatus(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <View style={styles.container}>
