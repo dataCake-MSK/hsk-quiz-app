@@ -32,7 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: astral-sh/setup-uv@v10
+      # setup-uv는 v10 같은 이동 태그를 제공하지 않아 정확한 버전으로 고정한다.
+      - uses: astral-sh/setup-uv@v10.1.0
         with:
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
