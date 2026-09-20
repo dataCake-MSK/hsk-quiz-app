@@ -27,8 +27,29 @@ defaults:
 
 jobs:
   check:
-    name: ruff · pytest
+    name: ruff · pytest · alembic
     runs-on: ubuntu-latest
+
+    # DB 테스트와 마이그레이션 검증용. 개발 PC와 같은 메이저 버전(17)을 쓴다.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hsk_quiz_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # CI 전용 로컬 컨테이너 접속 정보(비밀 값 아님). 실제 환경 값은 .env에만 둔다.
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/hsk_quiz_test
+      TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/hsk_quiz_test
+
     steps:
       - uses: actions/checkout@v7
 
@@ -46,6 +67,14 @@ jobs:
 
       - name: 포맷 확인
         run: uv run ruff format --check .
+
+      - name: 마이그레이션 적용
+        run: uv run alembic upgrade head
+
+      - name: 마이그레이션 되돌리기 확인
+        run: |
+          uv run alembic downgrade base
+          uv run alembic upgrade head
 
       - name: 테스트
         run: uv run pytest -q
