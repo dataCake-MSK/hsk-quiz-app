@@ -1,0 +1,62 @@
+name: Security
+
+# 비밀 값 스캔(gitleaks)과 의존성 감사. CodeQL(내 코드 정적 분석)은 저장소 기본 설정으로 따로 돈다.
+# 보안 리포트 9절: gitleaks = 비밀 값 / 의존성 감사 = 남의 코드의 알려진 취약점 / CodeQL = 내 코드
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # 매주 월요일 09:00 KST — 새로 알려진 취약점을 주기적으로 확인
+    - cron: '0 0 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: gitleaks (비밀 값)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # 기록 전체를 훑어야 과거 커밋에 들어간 값도 찾는다.
+          fetch-depth: 0
+
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # 개인 계정 저장소는 라이선스 키가 필요 없다(조직 계정만 필요).
+
+  dependencies:
+    name: 의존성 감사
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.1.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+
+      - name: backend — pip-audit
+        working-directory: backend
+        run: |
+          uv export --no-hashes --no-emit-project --format requirements-txt -o requirements.audit.txt
+          uvx pip-audit@2.10.1 -r requirements.audit.txt
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: mobile — npm audit
+        working-directory: mobile
+        # high 이상에서만 실패시킨다. moderate 이하(현재 Expo 간접 의존성 11건)는
+        # Dependabot 알림으로 추적하고, 여기서 막으면 개발이 계속 멈춘다.
+        run: npm audit --audit-level=high
