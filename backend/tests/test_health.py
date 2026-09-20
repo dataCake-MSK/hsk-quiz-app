@@ -2,6 +2,7 @@ from fastapi.testclient import TestClient
 
 from app.infrastructure.config import Settings
 from app.main import create_app
+from tests.conftest import TEST_DATABASE_URL, requires_db
 
 
 def _client(database_url: str | None = None) -> TestClient:
@@ -27,3 +28,11 @@ def test_health_reports_db_unavailable_when_connection_fails():
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "db": "unavailable"}
+
+
+@requires_db
+def test_health_reports_db_ok_with_real_db():
+    response = _client(TEST_DATABASE_URL).get("/health")
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "db": "ok"}

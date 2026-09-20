@@ -7,14 +7,14 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 | NB | PRD | SRS | 이슈 | PR | 상태 |
 |---|---|---|---|---|---|
 | - | 기반 | SRS-001 백엔드 스캐폴딩 | #1 | #24 | done |
-| NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | #2 | #27 | in-progress |
-| - | 기반 | SRS-003 CI | #3 | #32 | in-progress |
-| NB-002 | PRD-001 | SRS-004 PostgreSQL·users | #4 | - | todo |
+| NB-017 | 기반 | SRS-002 Expo 스캐폴딩 | #2 | #27 | done |
+| - | 기반 | SRS-003 CI | #3 | #32 | done |
+| NB-002 | PRD-001 | SRS-004 PostgreSQL·users | #4 | #34 | in-progress |
 | NB-002 | PRD-001 | SRS-010 회원가입 API | #5 | - | todo |
 | NB-002 | PRD-001 | SRS-011 로그인·내 정보 | #6 | - | todo |
 | NB-002 | PRD-001 | SRS-012 토큰 갱신 | #7 | - | todo |
 | NB-002 | PRD-001 | SRS-013 앱 가입·로그인 화면 | #8 | - | todo |
-| NB-013 | PRD-001 | SRS-014 rate limit·CORS | #9 | #28 | in-progress |
+| NB-013 | PRD-001 | SRS-014 rate limit·CORS | #9 | #28 | done |
 | NB-003 | PRD-002 | SRS-020 단어 테이블·목록 API | #10 | - | todo |
 | NB-003, NB-004 | PRD-002, PRD-003 | SRS-021 앱 단어 목록·상세 | #11 | - | todo |
 | NB-003 | PRD-002 | SRS-022 커스텀 단어 | #12 | - | todo |
