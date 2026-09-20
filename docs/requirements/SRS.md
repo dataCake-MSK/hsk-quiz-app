@@ -13,7 +13,7 @@
 | ID | M | 제목 | PRD | area | 상태 | 이슈 |
 |---|---|---|---|---|---|---|
 | SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | done | #1 |
-| SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | todo | #2 |
+| SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | in-progress | #2 |
 | SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | todo | #3 |
 | SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | todo | #4 |
 | SRS-010 | M1 | 회원가입 API | PRD-001 | auth | todo | #5 |
@@ -63,10 +63,10 @@
   - 첫 화면에서 백엔드 `/health`를 호출해 결과 표시. API 주소는 `EXPO_PUBLIC_API_URL` 환경 변수
   - 폰에서 백엔드에 접속하는 방법(같은 Wi‑Fi LAN IP / 터널)을 실제로 확인하고 리포트에 기록
 - AC
-  - [ ] 폰 Expo Go에서 앱을 열면 화면에 `서버 상태: ok` 표시
-  - [ ] 백엔드를 끄면 `서버에 연결할 수 없음` 표시
-  - [ ] `npx tsc --noEmit` 오류 0
-  - [ ] 접속 방식 결정이 `docs/reports/`에 기록됨
+  - [x] 폰 Expo Go에서 앱을 열면 화면에 `서버 상태: ok` 표시 — 2026-09-20 실기기 확인
+  - [x] 백엔드를 끄면 `서버에 연결할 수 없음 (502)` 표시 — 터널 뒤 서버가 죽으면 502가 오므로 502·503·504를 연결 실패로 묶고 상태 코드를 덧붙임
+  - [x] `npx tsc --noEmit` 오류 0
+  - [x] 접속 방식 결정이 `docs/reports/`에 기록됨 — [리포트](../reports/2026-09-20-phone-backend-access.md)
 
 ### SRS-003 CI
 - 추적: 기반 · 이슈: #3

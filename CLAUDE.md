@@ -107,10 +107,15 @@ Stop 훅(`.claude/hooks/stop-vcs-check.js`)이 턴 종료 시 커밋 안 된 변
 | 백엔드 테스트 | `cd backend && uv run pytest` |
 | 백엔드 lint | `cd backend && uv run ruff check .` |
 | 마이그레이션 | `cd backend && uv run alembic upgrade head` (SRS-004 이후) |
-| 앱 실행 | `cd mobile && npx expo start` |
+| 앱 실행(폰 확인) | `cd mobile && npx expo start --tunnel --go` (8081이 사용 중이면 `--port 8082`) |
 | 앱 타입 검사 | `cd mobile && npx tsc --noEmit` |
+| 백엔드 터널 | `cloudflared tunnel --url http://localhost:8000 --no-autoupdate` |
 
-- Expo는 SDK마다 API가 바뀌므로 코드 작성 전 해당 버전 문서를 확인한다.
+- Expo는 SDK마다 API가 바뀌므로 코드 작성 전 해당 버전 문서를 확인한다. 현재 SDK 57.
+- **폰 확인은 터널 2개**(Expo Metro + 백엔드 API)가 필요하다. 절차와 주의점은 [리포트](docs/reports/2026-09-20-phone-backend-access.md).
+  - 백엔드 터널 주소는 실행할 때마다 바뀌므로 `mobile/.env`의 `EXPO_PUBLIC_API_URL`을 갱신하고 Expo를 다시 시작한다.
+  - 백그라운드로 띄우면 주소가 로그에 안 나온다. Expo 주소는 `curl -s http://127.0.0.1:4040/api/tunnels`의 `public_url`(다른 Expo가 떠 있으면 4041…)을 `exp://`로 바꿔 전달한다.
+  - 터널 주소·Expo 주소는 개인 URL로 취급해 문서·커밋·일지에 쓰지 않는다(채팅으로만 전달).
 - **오래 켜둔 서버는 계속 켤지 묻는다.** 대상: Expo 개발 서버(Metro, Expo Go 미리보기), FastAPI 개발 서버, 터널.
   - 켤 때 시작 시각을 적어두고, **확인이 끝났을 때** 또는 **약 30분이 지났을 때** "계속 켜둘까요, 끌까요?"라고 묻는다. 계속 켜기로 하면 그 뒤로도 약 30분마다 다시 묻는다.
   - 사용자가 답하기 전에 **자동으로 끄지 않는다.**
