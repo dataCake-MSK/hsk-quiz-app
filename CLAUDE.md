@@ -107,10 +107,10 @@ Stop 훅(`.claude/hooks/stop-vcs-check.js`)이 턴 종료 시 커밋 안 된 변
 
 | 대상 | 명령 |
 |---|---|
-| 백엔드 실행 | `cd backend && uv run fastapi dev app/main.py` |
-| 백엔드 테스트 | `cd backend && uv run pytest` |
+| 백엔드 실행 | `cd backend && uv run --env-file .env fastapi dev app/main.py` |
+| 백엔드 테스트 | `cd backend && uv run --env-file .env pytest` (DB 없이 돌리려면 `--env-file` 생략) |
 | 백엔드 lint | `cd backend && uv run ruff check .` |
-| 마이그레이션 | `cd backend && uv run alembic upgrade head` (SRS-004 이후) |
+| 마이그레이션 | `cd backend && uv run --env-file .env alembic upgrade head` / 되돌리기 `... alembic downgrade base` |
 | 앱 실행(폰 확인) | `cd mobile && npx expo start --tunnel --go` (8081이 사용 중이면 `--port 8082`) |
 | 앱 타입 검사 | `cd mobile && npx tsc --noEmit` |
 | 앱 lint | `cd mobile && npx expo lint` |
@@ -124,6 +124,8 @@ cd mobile  && npm ci && npx tsc --noEmit && npx expo lint
 - 워크플로: `.github/workflows/ci-backend.yml`(backend/** 변경 시), `ci-mobile.yml`(mobile/** 변경 시). 바뀐 쪽만 돈다.
 - CI가 있으므로 🟢 자체 머지 전에는 `gh pr checks <번호> --watch`로 통과를 확인한다.
 
+- 백엔드는 `.env`를 자동으로 읽지 않는다. **`uv run --env-file .env ...`** 로 넘긴다(python-dotenv 같은 의존성을 더하지 않기 위해).
+- `alembic.ini`는 **ASCII만** 쓴다. configparser가 시스템 인코딩(한국어 Windows는 cp949)으로 읽어서 한글 주석이 있으면 `UnicodeDecodeError`로 죽는다.
 - Expo는 SDK마다 API가 바뀌므로 코드 작성 전 해당 버전 문서를 확인한다. 현재 SDK 57.
 - **폰 확인은 터널 2개**(Expo Metro + 백엔드 API)가 필요하다. 절차와 주의점은 [리포트](docs/reports/2026-09-20-phone-backend-access.md).
   - 백엔드 터널 주소는 실행할 때마다 바뀌므로 `mobile/.env`의 `EXPO_PUBLIC_API_URL`을 갱신하고 Expo를 다시 시작한다.
