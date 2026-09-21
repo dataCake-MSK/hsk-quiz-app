@@ -33,3 +33,6 @@ Thumbs.db
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# 감사용 임시 파일 (CI에서 생성)
+backend/requirements.audit.txt
