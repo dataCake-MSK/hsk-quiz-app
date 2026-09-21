@@ -15,7 +15,7 @@
 | SRS-001 | M0 | 백엔드 스캐폴딩과 health API | 기반 | infra | done | #1 |
 | SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | in-progress | #2 |
 | SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | in-progress | #3 |
-| SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | todo | #4 |
+| SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | in-progress | #4 |
 | SRS-010 | M1 | 회원가입 API | PRD-001 | auth | todo | #5 |
 | SRS-011 | M1 | 로그인 API와 내 정보 조회 | PRD-001 | auth | todo | #6 |
 | SRS-012 | M1 | 토큰 갱신 API | PRD-001 | auth | todo | #7 |
@@ -78,16 +78,16 @@
 
 ### SRS-004 PostgreSQL 연결, 마이그레이션 도구, users 테이블
 - 추적: 기반, PRD-001 · 이슈: #4
-- 선행: 사용자 PC에 PostgreSQL 설치 (안내는 이슈 착수 때 공식 문서 확인 후)
+- 선행: PostgreSQL 15 이상 — **사용자 PC에 17이 이미 설치되어 실행 중**(5432). 접속 비밀번호만 미확보 → 로컬 확인은 사용자 작업 필요. CI는 postgres:17 서비스 컨테이너로 항상 검증한다
 - 작업
   - SQLAlchemy 2 + psycopg, Alembic 설정. 접속 정보는 `DATABASE_URL` 환경 변수 — [ADR-0002](../architecture/adr/0002-postgresql-sqlalchemy-alembic.md)
   - `users`: `user_id BIGINT identity PK`, `email` (소문자 저장, UNIQUE), `password_hash`, `nickname`, `role` (`user`/`admin`, CHECK, 기본 `user`), `created_at timestamptz`
   - 테스트용 DB 분리(`TEST_DATABASE_URL`)
 - AC
-  - [ ] `uv run alembic upgrade head` 후 `psql`의 `\d users`에 위 컬럼·제약이 보임
-  - [ ] `uv run alembic downgrade base`가 오류 없이 되돌림
-  - [ ] `GET /health`가 DB 연결 상태를 `{"status":"ok","db":"ok"}`로 반환
-  - [ ] `.env.example`에 변수 이름만 있음
+  - [x] `uv run alembic upgrade head` 후 users 테이블에 위 컬럼·제약이 생김 — CI에서 마이그레이션 실행 + 제약 테스트 6개(컬럼 구성, role 기본값, 이메일 중복·대문자 거부, 잘못된 role 거부, identity 채번)로 확인. 로컬 `psql \d users` 확인은 사용자 작업
+  - [x] `uv run alembic downgrade base`가 오류 없이 되돌림 — CI에서 upgrade → downgrade → upgrade 순서로 확인
+  - [x] `GET /health`가 DB 연결 상태를 반환 — DB 있으면 `{"status":"ok","db":"ok"}`, 연결 실패면 `unavailable`, 설정 없으면 `not_configured`
+  - [x] `.env.example`에 변수 이름만 있음
 
 ## M1 MVP — 인증 (PRD-001)
 

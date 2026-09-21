@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 
 from app.infrastructure.config import Settings, load_settings
+from app.infrastructure.db.session import create_db_engine, create_session_factory
 from app.infrastructure.rate_limit import build_limiter, rate_limit_handler
 from app.interface.routers.health import create_health_router
 
@@ -27,7 +28,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             allow_headers=["Authorization", "Content-Type"],
         )
 
-    app.include_router(create_health_router(limiter, settings.public_rate_limit))
+    # DATABASE_URL이 없으면 DB 없이 뜬다(개발 초기·DB가 필요 없는 검사를 위해).
+    engine = create_db_engine(settings.database_url) if settings.database_url else None
+    app.state.db_engine = engine
+    app.state.session_factory = create_session_factory(engine) if engine else None
+
+    app.include_router(create_health_router(limiter, settings.public_rate_limit, engine))
     return app
 
 
