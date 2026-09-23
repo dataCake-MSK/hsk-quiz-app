@@ -16,7 +16,7 @@
 | SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | in-progress | #2 |
 | SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | in-progress | #3 |
 | SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | done | #4 |
-| SRS-010 | M1 | 회원가입 API | PRD-001 | auth | todo | #5 |
+| SRS-010 | M1 | 회원가입 API | PRD-001 | auth | in-progress | #5 |
 | SRS-011 | M1 | 로그인 API와 내 정보 조회 | PRD-001 | auth | todo | #6 |
 | SRS-012 | M1 | 토큰 갱신 API | PRD-001 | auth | todo | #7 |
 | SRS-013 | M1 | 앱 가입·로그인 화면과 토큰 보관 | PRD-001 | mobile | todo | #8 |
@@ -95,11 +95,12 @@
 - 추적: NB-002 → PRD-001 · 이슈: #5
 - 작업: `POST /auth/register` {email, password, nickname}. 비밀번호는 argon2 해싱 — [ADR-0004](../architecture/adr/0004-auth-and-identifiers.md). **SRS-014에서 준비한 `AUTH_RATE_LIMIT`을 이 라우터에 적용**하고 6번째 요청 → 429 테스트 추가
 - AC
-  - [ ] 정상 요청 → 201, 응답에 `user_id`, `email`, `nickname`만 있음(`password_hash` 없음)
-  - [ ] 같은 이메일(대소문자만 다른 경우 포함) → 409
-  - [ ] 비밀번호 8자 미만·이메일 형식 오류 → 422
-  - [ ] DB의 `password_hash`가 `$argon2id$`로 시작
-  - [ ] 위 경우를 pytest로 자동 검증
+  - [x] 정상 요청 → 201, 응답에 `user_id`, `email`, `nickname`만 있음(`password_hash` 없음)
+  - [x] 같은 이메일(대소문자만 다른 경우 포함) → 409
+  - [x] 비밀번호 8자 미만·이메일 형식 오류 → 422
+  - [x] DB의 `password_hash`가 `$argon2id$`로 시작
+  - [x] 위 경우를 pytest로 자동 검증 — `tests/test_auth_register.py` 10개
+  - [x] `AUTH_RATE_LIMIT`이 `/auth/register`에 적용(4번째 요청 → 429) — SRS-014에서 넘긴 몫
 
 ### SRS-011 로그인 API와 내 정보 조회
 - 추적: NB-002 → PRD-001 · 이슈: #6
