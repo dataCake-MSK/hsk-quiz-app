@@ -11,3 +11,4 @@
 | 프론트엔드·백엔드 모노레포 vs 분리 | [monorepo-frontend-backend.md](monorepo-frontend-backend.md) | ② 아키텍처 |
 | ngrok과 터널이 하는 일 | [ngrok-and-tunnels.md](ngrok-and-tunnels.md) | (개발 환경) |
 | rate limit과 CORS | [rate-limit-and-cors.md](rate-limit-and-cors.md) | ③ 보안 |
+| 데이터 모델링과 식별자(키) 설계 | [data-modeling-and-keys.md](data-modeling-and-keys.md) | ① DB 설계 |
