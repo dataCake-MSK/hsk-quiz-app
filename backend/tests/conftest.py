@@ -36,12 +36,12 @@ def db_engine() -> Engine:
 
 
 @pytest.fixture(autouse=True)
-def clean_users(request: pytest.FixtureRequest):
-    """DB를 쓰는 테스트마다 users를 비운다."""
+def clean_tables(request: pytest.FixtureRequest):
+    """DB를 쓰는 테스트마다 테이블을 비운다(테스트 간 간섭 방지)."""
     if "db_engine" not in request.fixturenames:
         yield
         return
     engine: Engine = request.getfixturevalue("db_engine")
     with engine.begin() as connection:
-        connection.execute(text("TRUNCATE TABLE users RESTART IDENTITY CASCADE"))
+        connection.execute(text("TRUNCATE TABLE words, users RESTART IDENTITY CASCADE"))
     yield
