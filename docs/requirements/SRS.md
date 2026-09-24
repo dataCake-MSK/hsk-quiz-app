@@ -6,8 +6,9 @@
 - AC는 확인 가능한 문장으로 쓴다. PR이 머지되면 AC를 체크하고 [추적표](traceability.md)를 갱신한다.
 - 공통 AC(모든 기능 항목에 적용, 항목마다 반복하지 않음)
   - CI가 도입된 뒤(SRS-003)에는 CI 통과
-  - 유저 소유 리소스는 다른 유저 토큰으로 접근하면 404
+  - 유저 소유 리소스는 다른 유저 토큰으로 접근하면 404 — **인증 도입 이후 적용**(NB-019)
   - 비밀 값은 `.env`에서만 읽고, `.env.example`에는 이름만 남김
+- **인증 보류 (2026-09-24, NB-019)**: SRS-010~013은 `deferred`. 단어·퀴즈 기능을 먼저 만들고, 인증 방식(직접 구현 / 외부 서비스)을 다시 정한 뒤 재개한다. 그 전까지 API는 **공용 데이터만** 다루고, 유저별 기능(즐겨찾기·숙련도·세션 소유)은 인증 이후로 미룬다.
 
 ## 목록
 | ID | M | 제목 | PRD | area | 상태 | 이슈 |
@@ -16,11 +17,11 @@
 | SRS-002 | M0 | Expo 앱 스캐폴딩과 백엔드 연결 확인 | 기반 | mobile | in-progress | #2 |
 | SRS-003 | M0 | CI (backend lint·test, mobile typecheck·lint) | 기반 | infra | in-progress | #3 |
 | SRS-004 | M0 | PostgreSQL 연결, 마이그레이션 도구, users 테이블 | 기반 | db | done | #4 |
-| SRS-010 | M1 | 회원가입 API | PRD-001 | auth | todo | #5 |
-| SRS-011 | M1 | 로그인 API와 내 정보 조회 | PRD-001 | auth | todo | #6 |
-| SRS-012 | M1 | 토큰 갱신 API | PRD-001 | auth | todo | #7 |
-| SRS-013 | M1 | 앱 가입·로그인 화면과 토큰 보관 | PRD-001 | mobile | todo | #8 |
-| SRS-014 | M1 | 인증 엔드포인트 rate limit과 CORS | PRD-001 | auth | in-progress | #9 |
+| SRS-010 | M1 | 회원가입 API | PRD-001 | auth | deferred | #5 |
+| SRS-011 | M1 | 로그인 API와 내 정보 조회 | PRD-001 | auth | deferred | #6 |
+| SRS-012 | M1 | 토큰 갱신 API | PRD-001 | auth | deferred | #7 |
+| SRS-013 | M1 | 앱 가입·로그인 화면과 토큰 보관 | PRD-001 | mobile | deferred | #8 |
+| SRS-014 | M1 | 인증 엔드포인트 rate limit과 CORS | PRD-001 | auth | done | #9 |
 | SRS-020 | M1 | 단어 테이블, 샘플 시드, 단어 목록 API | PRD-002 | words | todo | #10 |
 | SRS-021 | M1 | 앱 단어 목록·상세 화면 | PRD-002, PRD-003 | mobile | todo | #11 |
 | SRS-022 | M1 | 커스텀 단어 추가 | PRD-002 | words | todo | #12 |
@@ -92,6 +93,7 @@
 ## M1 MVP — 인증 (PRD-001)
 
 ### SRS-010 회원가입 API
+- **상태: 보류(2026-09-24, NB-019)** — 구현·검증은 끝났으나 PR #36을 닫아 저장소에는 반영하지 않았다. 재개할 때 그 PR의 커밋에서 되살릴 수 있다.
 - 추적: NB-002 → PRD-001 · 이슈: #5
 - 작업: `POST /auth/register` {email, password, nickname}. 비밀번호는 argon2 해싱 — [ADR-0004](../architecture/adr/0004-auth-and-identifiers.md). **SRS-014에서 준비한 `AUTH_RATE_LIMIT`을 이 라우터에 적용**하고 6번째 요청 → 429 테스트 추가
 - AC
@@ -149,11 +151,11 @@
 - 작업
   - `words`: `word_id` PK, `owner_id` FK users NULL, `hanzi`, `pinyin`, `kr_pronunciation`, `meaning_kr`, `hsk_level` (CHECK 1~3), `pos`, `example_sentence`, `example_meaning_kr`
   - 시드 스크립트 `uv run python -m app.infrastructure.seed words` (여러 번 실행해도 중복 없음)
-  - `GET /words?hsk_level=` (로그인 필요, `owner_id IS NULL OR owner_id = 나`)
+  - `GET /words?hsk_level=` — **인증 보류 기간에는 공용 단어(`owner_id IS NULL`)만 반환하고 토큰을 요구하지 않는다.** 인증 도입 후 `owner_id IS NULL OR owner_id = 나`로 바꾸고 로그인 필수로 되돌린다(NB-019)
 - AC
   - [ ] 시드를 2번 실행해도 단어 수가 같음
   - [ ] `GET /words?hsk_level=1` → 1급 단어만
-  - [ ] 토큰 없이 → 401
+  - [ ] 토큰 없이도 조회된다(인증 보류 기간). 인증 도입 시 401로 바꾸는 작업을 SRS-011에 포함
   - [ ] 응답 필드가 문서화된 스키마와 같음 (`/docs`)
 
 ### SRS-021 앱 단어 목록·상세 화면
@@ -164,6 +166,7 @@
   - [ ] 로딩 중·빈 목록·오류 상태 문구가 각각 보임
 
 ### SRS-022 커스텀 단어 추가
+- **선행: 인증(NB-019)** — 소유자 개념이 필요하므로 인증 재개 후 진행한다.
 - 추적: NB-003 → PRD-002 · 이슈: #12
 - 작업: `POST /words` (owner_id = 나), 앱에 추가 화면
 - AC
@@ -184,6 +187,7 @@
   - [ ] 앱 목록에서 카테고리 필터가 동작
 
 ### SRS-024 단어 즐겨찾기
+- **선행: 인증(NB-019)** — 유저별 데이터라 인증 재개 후 진행한다.
 - 추적: NB-005 → PRD-004 · 이슈: #14
 - 작업: `word_bookmarks`(user_id, word_id 복합 PK, created_at), `PUT/DELETE /words/{id}/bookmark`(멱등), `GET /words?bookmarked=true`, 목록·상세의 ☆/★ 토글, 즐겨찾기 탭
 - AC
