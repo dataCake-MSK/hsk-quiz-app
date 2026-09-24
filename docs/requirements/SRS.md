@@ -22,7 +22,7 @@
 | SRS-012 | M1 | 토큰 갱신 API | PRD-001 | auth | deferred | #7 |
 | SRS-013 | M1 | 앱 가입·로그인 화면과 토큰 보관 | PRD-001 | mobile | deferred | #8 |
 | SRS-014 | M1 | 인증 엔드포인트 rate limit과 CORS | PRD-001 | auth | done | #9 |
-| SRS-020 | M1 | 단어 테이블, 샘플 시드, 단어 목록 API | PRD-002 | words | todo | #10 |
+| SRS-020 | M1 | 단어 테이블, 샘플 시드, 단어 목록 API | PRD-002 | words | in-progress | #10 |
 | SRS-021 | M1 | 앱 단어 목록·상세 화면 | PRD-002, PRD-003 | mobile | todo | #11 |
 | SRS-022 | M1 | 커스텀 단어 추가 | PRD-002 | words | todo | #12 |
 | SRS-023 | M1 | 카테고리 태그와 필터 | PRD-003 | words | todo | #13 |
@@ -150,13 +150,16 @@
 - 선행: NB-016(HSK 기준) 결정 전이면 **개발용 샘플 20단어**로 진행
 - 작업
   - `words`: `word_id` PK, `owner_id` FK users NULL, `hanzi`, `pinyin`, `kr_pronunciation`, `meaning_kr`, `hsk_level` (CHECK 1~3), `pos`, `example_sentence`, `example_meaning_kr`
-  - 시드 스크립트 `uv run python -m app.infrastructure.seed words` (여러 번 실행해도 중복 없음)
+  - 시드 스크립트 `uv run --env-file .env python -m app.infrastructure.seed words` (여러 번 실행해도 중복 없음)
+  - 공용 단어 중복 방지는 **부분 유니크 인덱스**로: `UNIQUE(hanzi) WHERE owner_id IS NULL`, `UNIQUE(owner_id, hanzi) WHERE owner_id IS NOT NULL`
   - `GET /words?hsk_level=` — **인증 보류 기간에는 공용 단어(`owner_id IS NULL`)만 반환하고 토큰을 요구하지 않는다.** 인증 도입 후 `owner_id IS NULL OR owner_id = 나`로 바꾸고 로그인 필수로 되돌린다(NB-019)
 - AC
-  - [ ] 시드를 2번 실행해도 단어 수가 같음
-  - [ ] `GET /words?hsk_level=1` → 1급 단어만
-  - [ ] 토큰 없이도 조회된다(인증 보류 기간). 인증 도입 시 401로 바꾸는 작업을 SRS-011에 포함
-  - [ ] 응답 필드가 문서화된 스키마와 같음 (`/docs`)
+  - [x] 시드를 2번 실행해도 단어 수가 같음 — 두 번 모두 `추가 0개, 건너뜀 20개, 현재 총 20개`
+  - [x] `GET /words?hsk_level=1` → 1급 단어만 (20개 중 9개)
+  - [x] 토큰 없이도 조회된다(인증 보류 기간). 인증 도입 시 401로 바꾸는 작업을 SRS-011에 포함
+  - [x] 응답 필드가 문서화된 스키마와 같음 (`/docs`) — `owner_id` 같은 내부 값은 노출하지 않음
+  - [x] 소유자가 있는 단어(커스텀 단어)는 공용 목록에 섞이지 않음
+  - [x] 잘못된 급수(`hsk_level=9`) → 422
 
 ### SRS-021 앱 단어 목록·상세 화면
 - 추적: NB-003, NB-004 → PRD-002, PRD-003 · 이슈: #11

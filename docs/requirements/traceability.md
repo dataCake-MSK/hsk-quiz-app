@@ -15,7 +15,7 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 | NB-002 | PRD-001 | SRS-012 토큰 갱신 | #7 | - | deferred |
 | NB-002 | PRD-001 | SRS-013 앱 가입·로그인 화면 | #8 | - | deferred |
 | NB-013 | PRD-001 | SRS-014 rate limit·CORS | #9 | #28 | done |
-| NB-003 | PRD-002 | SRS-020 단어 테이블·목록 API | #10 | - | todo |
+| NB-003 | PRD-002 | SRS-020 단어 테이블·목록 API | #10 | #39 | in-progress |
 | NB-003, NB-004 | PRD-002, PRD-003 | SRS-021 앱 단어 목록·상세 | #11 | - | todo |
 | NB-003 | PRD-002 | SRS-022 커스텀 단어 | #12 | - | todo |
 | NB-004, NB-015 | PRD-003 | SRS-023 카테고리 | #13 | - | todo |
