@@ -11,9 +11,9 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 | - | 기반 | SRS-003 CI | #3 | #32 | done |
 | NB-002 | PRD-001 | SRS-004 PostgreSQL·users | #4 | #34 | done |
 | NB-002 | PRD-001 | SRS-010 회원가입 API | #5 | - | todo |
-| NB-002 | PRD-001 | SRS-011 로그인·내 정보 | #6 | - | todo |
-| NB-002 | PRD-001 | SRS-012 토큰 갱신 | #7 | - | todo |
-| NB-002 | PRD-001 | SRS-013 앱 가입·로그인 화면 | #8 | - | todo |
+| NB-002 | PRD-001 | SRS-011 로그인·내 정보 | #6 | - | deferred |
+| NB-002 | PRD-001 | SRS-012 토큰 갱신 | #7 | - | deferred |
+| NB-002 | PRD-001 | SRS-013 앱 가입·로그인 화면 | #8 | - | deferred |
 | NB-013 | PRD-001 | SRS-014 rate limit·CORS | #9 | #28 | done |
 | NB-003 | PRD-002 | SRS-020 단어 테이블·목록 API | #10 | - | todo |
 | NB-003, NB-004 | PRD-002, PRD-003 | SRS-021 앱 단어 목록·상세 | #11 | - | todo |
@@ -42,6 +42,7 @@ NB → PRD → SRS → 이슈 → PR 연결. PR을 만들거나 머지할 때 AI
 ## 보류·미승격 NB
 | NB | 상태 | 다음 행동 |
 |---|---|---|
+| NB-019 인증 작업 보류 | hold | 단어·퀴즈 기능을 확인한 뒤 직접 구현 / 외부 서비스 결정 |
 | NB-016 HSK 기준·데이터 출처 | hold | SRS-020 착수 전 리포트로 결정 |
 | NB-018 토큰 rotation·비밀번호 재설정·2FA | hold | 1차 이후 검토 |
 
