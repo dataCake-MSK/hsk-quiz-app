@@ -13,3 +13,4 @@
 | rate limit과 CORS | [rate-limit-and-cors.md](rate-limit-and-cors.md) | ③ 보안 |
 | 데이터 모델링과 식별자(키) 설계 | [data-modeling-and-keys.md](data-modeling-and-keys.md) | ① DB 설계 |
 | DB 용어 사전 (대리키·CHECK·정션·복합 PK·자기참조 등) | [db-terms.md](db-terms.md) | ① DB 설계 |
+| SQL 조인과 별칭 (같은 표를 두 번 조인하기) | [sql-joins-and-aliases.md](sql-joins-and-aliases.md) | ① DB 설계 |
