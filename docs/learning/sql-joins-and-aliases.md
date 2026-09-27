@@ -112,6 +112,28 @@ SQL은 쓰는 순서와 처리 순서가 다르다.
 - `a`, `b`, `l` 같은 한 글자는 짧아서 흔하지만, 뜻이 드러나는 이름(`base`, `pair`)이 더 나을 때도 있다.
 - `WHERE a.hanzi = '买'`처럼 **조인 뒤 조건**과, `ON a.word_id = ...`처럼 **붙이는 조건**은 역할이 다르다. 헷갈리면 "ON은 붙이는 규칙, WHERE는 거르는 규칙"으로 기억한다.
 
+## 이 프로젝트의 규칙 (2026-09-27)
+**별칭은 되도록 쓰지 않는다.** 표 이름을 그대로 적으면 어느 표의 칸인지 바로 보인다.
+
+```sql
+-- 별칭 없이 (권장)
+SELECT words.hanzi
+FROM words
+JOIN word_categories ON word_categories.word_id = words.word_id
+JOIN categories      ON categories.category_id = word_categories.category_id
+WHERE categories.name = '여행';
+```
+
+**예외: 같은 표를 두 번 조인할 때.** 별칭이 없으면 문법 오류가 나므로 쓰되, `a`/`b` 대신 **뜻이 드러나는 이름**을 쓴다.
+```sql
+-- 같은 words를 '기준 단어'와 '짝 단어' 두 역할로 붙여야 해서 별칭이 필수다
+SELECT pair_word.hanzi, confusion_links.confusion_type
+FROM confusion_links
+JOIN words AS base_word ON base_word.word_id = confusion_links.word_a_id
+JOIN words AS pair_word ON pair_word.word_id = confusion_links.word_b_id
+WHERE base_word.hanzi = '买';
+```
+
 ## 참고
 - PostgreSQL 조인: https://www.postgresql.org/docs/current/queries-table-expressions.html#QUERIES-JOIN
 - 관련 노트: [DB 용어 사전](db-terms.md), [데이터 모델링과 식별자](data-modeling-and-keys.md)
