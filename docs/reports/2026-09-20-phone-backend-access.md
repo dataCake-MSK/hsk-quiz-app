@@ -58,3 +58,38 @@ cd mobile && npx expo start --tunnel --go
 - Expo CLI `--tunnel`: https://docs.expo.dev/more/expo-cli/
 - Expo 환경 변수(`EXPO_PUBLIC_`는 번들에 노출): https://docs.expo.dev/guides/environment-variables/
 - Cloudflare 빠른 터널: https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/
+
+## 갱신 (2026-09-28) — Expo 기본 터널이 실패할 때: Metro도 cloudflared로
+
+`npx expo start --tunnel`이 두 번 연속 실패했다.
+```
+CommandError: failed to start tunnel
+remote gone away
+```
+ngrok 상태 페이지는 "All Systems Operational"이었으므로 Expo가 쓰는 `.exp.direct` 쪽 문제로 판단했다.
+
+### 대안: Metro도 cloudflared로 내보내기 (동작 확인됨)
+Expo CLI는 `EXPO_PACKAGER_PROXY_URL`로 "공개 주소는 이것"이라고 알려줄 수 있다(공식 문서 기재).
+
+```bash
+# 1) Metro용 터널 먼저 띄워 주소를 얻는다
+cloudflared tunnel --url http://localhost:8081 --no-autoupdate     # https://<A>.trycloudflare.com
+
+# 2) 그 주소를 알려주며 Expo를 띄운다 (--tunnel 없이)
+cd mobile
+EXPO_PACKAGER_PROXY_URL=https://<A>.trycloudflare.com npx expo start --go
+
+# 3) 폰에는 https를 exp로 바꿔 전달
+#    exp://<A>.trycloudflare.com
+```
+
+확인한 것: 터널로 `/status` 200, 매니페스트 200(안의 번들 주소가 터널 주소로 바뀜), `/index.bundle` 200(4.2MB).
+
+### 주의
+- 이 방식은 **Expo 자체 터널이 아니므로 Expo Go의 개발 서버 목록에는 뜨지 않을 수 있다.** 주소를 직접 입력해야 한다.
+- 터널이 **2개**(백엔드 8000, Metro 8081) 필요하고 주소는 실행할 때마다 바뀐다. `mobile/.env`의 `EXPO_PUBLIC_API_URL`은 **백엔드 터널 주소**다(Metro 주소가 아니다).
+- 기본은 여전히 `npx expo start --tunnel`(Expo Go 목록에 떠서 편하다). **실패할 때만** 이 방법을 쓴다.
+
+### 참고
+- Expo CLI `EXPO_PACKAGER_PROXY_URL`: https://docs.expo.dev/more/expo-cli/
+
